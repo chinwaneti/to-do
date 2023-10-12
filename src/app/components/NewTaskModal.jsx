@@ -6,7 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TimePicker } from '@mui/x-date-pickers';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { AiOutlineBell, AiOutlineClose } from "react-icons/ai";
+import {  AiOutlineClose } from "react-icons/ai";
 import { getFirestore } from 'firebase/firestore'; 
 
 const NewTaskModal = ({ isOpen, onClose }) => {

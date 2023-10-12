@@ -1,11 +1,9 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import Search from '../components/Search';
 import Image from 'next/image';
 import pic from '../images/logo.png';
 import { FaPlus } from 'react-icons/fa';
-import { BsCircle, BsPencil, BsTrash } from 'react-icons/bs';
-import Footer from '../components/Footer';
+import { BsCircle, BsTrash } from 'react-icons/bs';
 import Link from 'next/link';
 import SignInModal from '../components/SignInModal';
 import NewTaskModal from '../components/NewTaskModal';

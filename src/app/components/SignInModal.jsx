@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
 import { AiOutlineClose } from 'react-icons/ai';
 
 
