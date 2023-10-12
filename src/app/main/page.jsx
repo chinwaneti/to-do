@@ -11,6 +11,7 @@ import SignInModal from '../components/SignInModal';
 import NewTaskModal from '../components/NewTaskModal';
 import { collection, query, orderBy, getDocs, deleteDoc, doc, setDoc } from 'firebase/firestore'; 
 import { db } from '../firebase';
+import { FaArrowRotateRight} from 'react-icons/fa6';
 
 
 export default function Main() {
@@ -90,6 +91,29 @@ export default function Main() {
     closeTask(); 
   };
 
+  
+  const handleRepeatTask = async (taskId) => {
+    try {
+      const taskRef = doc(db, 'tasks', taskId);
+      await setDoc(taskRef, { completed: false }, { merge: true });
+
+      setTaskGroups((prevGroups) => {
+        const updatedGroups = { ...prevGroups };
+        for (const dateKey in updatedGroups) {
+          updatedGroups[dateKey] = updatedGroups[dateKey].map((task) => {
+            if (task.id === taskId) {
+              return { ...task, completed: false };
+            }
+            return task;
+          });
+        }
+        return updatedGroups;
+      });
+    } catch (error) {
+      console.error('Error repeating task: ', error);
+    }
+  };
+
   const handleDeleteTask = async (taskId) => {
     try {
       await deleteDoc(doc(db, 'tasks', taskId));
@@ -140,7 +164,7 @@ export default function Main() {
     <div className="flex justify-between items-center px-4 py-3 bg-white shadow-lg">
       <div className="flex items-center space-x-2">
         <Image src={pic} alt="pics" width={30} height={30} />
-        <h1 className="text-2xl font-semibold">Your To-Do List</h1>
+        <h1 className="text-2xl font-semibold"> To-Do List</h1>
       </div>
       <button
         onClick={openModal}
@@ -184,11 +208,7 @@ export default function Main() {
         >
           School
         </button>
-        <button
-          className="px-4 py-2 text-blue-500 hover:text-blue-700 transition duration-300"
-        >
-          Manage
-        </button>
+        
       </div>
 
       {Object.entries(taskGroups).map(([date, tasks]) => (
@@ -212,24 +232,32 @@ cursor-pointer text-green-500"
                     )}
                     <div
                       className={`relative ${
-                        task.completed ? 'line-through' : ''
-                      } font-semibold text-lg`}
+                        task.completed ? 'line-through'  : ''
+                      }
+                       font-semibold text-lg`}
                       style={{
                         color: task.completed ? '#bebebe' : '#000000',
                       }}
                     >
                       {task.description}
-                    </div>
+                    </div >
+                    <div className='ml-3'>{task.completed ? "completed" : ""}</div>
+                      
                   </div>
+                  <div></div>
                   <div className="text-sm text-gray-500">
                     {task.date.toLocaleString()} {task.time}
                   </div>
+                  <div className='flex space-x-10'>
+                      <div className='text-green-600'> {task.completed ? <span onClick={()=> handleRepeatTask(task.id)}><FaArrowRotateRight/></span> : ""}</div>
                   <span
                     onClick={() => handleDeleteTask(task.id)}
-                    className="cursor-pointer text-red-500"
+                    className="cursor-pointer text-red-500 f"
                   >
+                     
+
                     <BsTrash />
-                  </span>
+                  </span></div>
                 </li>
               ))}
           </ul>
@@ -242,15 +270,15 @@ cursor-pointer text-green-500"
         onClick={openTask}
         className="fixed right-10 bottom-10"
       >
-        <div style={{ color: 'white', position: 'fixed', right: '20px', bottom: '100px' }} className="bg-blue-200  w-16 h-16 p-3 animate-pulse infinite rounded-full">
-          <div className="  bg-blue-400 w-10 h-10 p-3 border-blue-400 border-solid border rounded-full">
+        <div style={{ color: 'white', position: 'fixed', right: '40px', bottom: '80px' }} className="bg-blue-950  w-16 h-16 p-3  rounded-full">
+          <div className="  bg-blue-500 w-10 h-10 p-3 border-blue-400 border-solid border rounded-full">
             <FaPlus />
           </div>
         </div>
       </div>
     </Link>
 
-    <Footer />
+    {/* <Footer /> */}
     {isModalOpen && (
       <SignInModal
         isOpen={isModalOpen}

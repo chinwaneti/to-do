@@ -36,47 +36,50 @@ function SignUpModal() {
   };
 
   return (
-    <div className='bg-gray-200 h-screen relative'>
-      <div className="bg-white w-96 rounded-lg absolute top-[20%] left-[35%] shadow-lg p-8">
-        <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            className="w-full mt-1 py-2 px-3 border rounded-lg border-gray-300 focus:ring focus:ring-indigo-200 focus:outline-none"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="w-full mt-1 py-2 px-3 border rounded-lg border-gray-300 focus:ring focus:ring-indigo-200 focus:outline-none"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {errorMessage && <div className="text-red-500">{errorMessage}</div>}
-        </div>
-        <button
-          className="bg-indigo-500 text-white w-full py-2 rounded-lg hover:bg-indigo-600 transition duration-300 ease-in-out"
-          onClick={handleSignUp}
-        >
-          Sign Up
-        </button>
+    <div className="bg-gray-200 min-h-screen flex items-center justify-center">
+    <div className="bg-white w-full max-w-sm mx-4 rounded-lg shadow-lg p-8">
+      <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
+      <div className="mb-4">
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          Email Address
+        </label>
+        <input
+          type="email"
+          id="email"
+          className="w-full mt-1 py-2 px-3 border rounded-lg border-gray-300 focus:ring focus:ring-indigo-200 focus:outline-none"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </div>
-     <Link href="/main"> <div className='absolute top-[20%] right-[35.5%] hover:bg-gray-100 p-2 rounded-full'>
-          <AiOutlineClose />
-        </div></Link>
+      <div className="mb-6">
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
+        <input
+          type="password"
+          id="password"
+          className="w-full mt-1 py-2 px-3 border rounded-lg border-gray-300 focus:ring focus:ring-indigo-200 focus:outline-none"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+      </div>
+      <button
+        className="bg-indigo-500 text-white w-full py-2 rounded-lg hover:bg-indigo-600 transition duration-300 ease-in-out"
+        onClick={handleSignUp}
+      >
+        Sign Up
+      </button>
     </div>
+    <Link href="/main">
+      <div className="absolute top-2 right-2 hover:bg-gray-100 p-2 rounded-full">
+        <AiOutlineClose />
+      </div>
+    </Link>
+  </div>
+  
   );
 }
 

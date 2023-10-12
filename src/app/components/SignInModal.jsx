@@ -13,7 +13,6 @@ function SignInModal({ isOpen, onClose, onSignInSuccess }) {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
-  const router = useRouter(); // Initialize useRouter
 
 
   const handleClose =()=>{
@@ -22,25 +21,22 @@ function SignInModal({ isOpen, onClose, onSignInSuccess }) {
 
   const handleSignIn = (e) => {
     e.preventDefault();
+    
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         if (userCredential.user) {
-          // Call the callback function to close the modal
           onSignInSuccess();
         }
         console.log(userCredential);
       })
       .catch((error) => {
-        setError(error);
+       
 
-        // Check if the error is due to invalid login credentials
         if (error.code === 'auth/invalid-login-credentials') {
-          // Redirect the user to the signup page using useRouter
-          router.push('/tired'); // Replace with your signup page URL
+          setError("Error in Email or Password")
+         
         }
-        // if (_tokenResponse.registered === "true"){
-        //     onClose()
-        // }
+      
       });
   };
 
@@ -95,6 +91,9 @@ function SignInModal({ isOpen, onClose, onSignInSuccess }) {
         <div onClick={handleClose} className='absolute top-1 right-1 hover:bg-gray-100 p-2 rounded-full'>
           <AiOutlineClose />
         </div>
+        <div>
+          {error && ( <p className='text-red-600'>{error}</p> )}
+        </div>
         <button
           className="bg-indigo-500 text-white w-full py-2 rounded-lg hover:bg-indigo-600 transition duration-300 ease-in-out"
           onClick={handleSignIn}
@@ -102,7 +101,7 @@ function SignInModal({ isOpen, onClose, onSignInSuccess }) {
           Sign In
         </button>
         <p className="text-gray-500 mt-4 text-center text-sm">
-          No account? <Link href="/tired">Sign up</Link>
+          No account? <Link href="/tired" className='font-bold hover:text-indigo-600'>Sign up</Link>
         </p>
       </div>
       
