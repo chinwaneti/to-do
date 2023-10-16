@@ -1,25 +1,26 @@
 "use client"
-import React, { useEffect } from 'react';
+import React,{useEffect} from 'react';
 import { useRouter } from 'next/navigation';
 import Welcome from './components/Welcome';
 
 export default function Page() {
-  const router = useRouter();
-
+  const router =useRouter()
+  const navigate = ()=>{
+      router.push("/welcome-again")
+  }
   useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push('/welcome-again');
-    }, 4000);
-
+    const timer = setTimeout(navigate, 4000); // 5000 milliseconds (5 seconds)
+    
+    // Clear the timer when the component unmounts (optional)
     return () => clearTimeout(timer);
-  }, [router]);
-
+  }, []);
   return (
-    <div className="h-screen flex flex-col justify-center items-center">
-      <div className="text-center">
+    <div
+      className='h-screen w-[100%] flex justify-center items-center bg-gray-200'
+    >
+      <div>
         <Welcome />
       </div>
-      <div>hello</div>
     </div>
   );
 }
