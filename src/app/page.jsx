@@ -9,11 +9,12 @@ export default function Page() {
       router.push("/welcome-again")
   }
   useEffect(() => {
-    const timer = setTimeout(navigate, 4000); // 5000 milliseconds (5 seconds)
-    
-    // Clear the timer when the component unmounts (optional)
+    const timer = setTimeout(() => {
+      router.push('/welcome-again');
+    }, 4000);
+
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
   return (
     <div
       className='h-screen w-[100%] flex justify-center items-center bg-gray-200'
