@@ -5,21 +5,32 @@ import pic from '../images/logo.png';
 import { FaPlus } from 'react-icons/fa';
 import { BsCircle, BsTrash } from 'react-icons/bs';
 import Link from 'next/link';
-import SignInModal from '../components/SignInModal';
+import ProfileModal from '../components/ProfileModal';
 import NewTaskModal from '../components/NewTaskModal';
 import { collection, query, orderBy, getDocs, deleteDoc, doc, setDoc } from 'firebase/firestore'; 
-import { db } from '../firebase';
+import { db } from '../firebase'; 
 import { FaArrowRotateRight} from 'react-icons/fa6';
+import { FaSun, FaMoon } from 'react-icons/fa'; // Import the icons from react-icons
+
 
 
 export default function Main() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTask, setNewTask] = useState(false);
   const [taskGroups, setTaskGroups] = useState([]);
   const [filterCat, setFilterCat] = useState("All");
-  
+  const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState('');
+  const [isNightTheme, setIsNightTheme] = useState(false);
 
+  
+  const toggleTheme =()=>{
+    setIsNightTheme(!isNightTheme)
+  }
  
+
+  const handleNameChange = (newName)=>{
+    setUserName(newName)
+  }
   
   useEffect(() => {
     const tasksRef = collection(db, 'tasks');
@@ -65,17 +76,24 @@ export default function Main() {
     return groupedTasks;
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const updateTaskGroups = (newTask) => {
+    setTaskGroups((prevTaskGroups) => {
+      const updatedTaskGroups = { ...prevTaskGroups };
+  
+      // Add the new task to the appropriate date key
+      const dateKey = newTask.date.toDateString();
+      if (!updatedTaskGroups[dateKey]) {
+        updatedTaskGroups[dateKey] = [newTask];
+      } else {
+        updatedTaskGroups[dateKey].push(newTask);
+      }
+  
+      return updatedTaskGroups;
+    });
   };
+  
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSignInSuccess = () => {
-    closeModal(); 
-  };
+ 
 
   const openTask = () => {
     setNewTask(true);
@@ -88,6 +106,13 @@ export default function Main() {
   const handleTask = () => {
     closeTask(); 
   };
+
+  const handleSignInSuccess = (user) => {
+    setUserId(user.uid); // Set userId when the user signs in
+    closeModal();
+  };
+
+
 
   
   const handleRepeatTask = async (taskId) => {
@@ -158,18 +183,29 @@ export default function Main() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-purple-200 to-blue-300">
-    <div className="flex justify-between items-center px-4 py-3 bg-white shadow-lg">
+    <div className={`w-full min-h-screen ${isNightTheme ? 'bg-gradient-to-br from-purple-950 to-blue-950' : 'bg-gradient-to-br from-purple-200 to-blue-300'}`}>
+    <div className={`flex justify-between items-center px-4 py-3   shadow-lg ${isNightTheme ? 'bg-gradient-to-br from-purple-900 to-blue-950' : 'bg-white'}`}>
       <div className="flex items-center space-x-2">
         <Image src={pic} alt="pics" width={30} height={30} />
-        <h1 className="text-2xl font-semibold"> To-Do List</h1>
+        <h1 className="text-2xl font-semibold">Welcome {userName || 'Guest'}</h1>
+
       </div>
-      <button
-        onClick={openModal}
-        className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 transition duration-300"
-      >
-        Sign-In
-      </button>
+
+      <div className='flex space-x-5'>
+      <button onClick={toggleTheme} className="p-2  rounded-full">
+            {isNightTheme ? (
+              <FaSun color="white" size={24} /> // Day icon
+            ) : (
+              <FaMoon color="#3D3D3D" size={24} /> // Night icon
+            )}
+          </button>
+      
+     
+        <ProfileModal 
+        onNameChange={setUserName}
+        userId={userId}
+        isNightTheme={isNightTheme}
+/></div>
     </div>
 
     <div className="px-4 py-6 space-y-6">
@@ -210,14 +246,14 @@ export default function Main() {
       </div>
 
       {Object.entries(taskGroups).map(([date, tasks]) => (
-        <div key={date} className="bg-white bg-opacity-90 p-4 rounded-md shadow-md">
+        <div key={date} className={`${isNightTheme ? 'bg-gradient-to-br from-purple-900 to-blue-950' : 'bg-white'} bg-opacity-90 p-4 rounded-md shadow-md`}>
           <h2 className="mt-3 text-2xl font-semibold">{date}</h2>
           <ul>
             {tasks
               .filter((task) => (filterCat === 'All' ? true : task.category === filterCat))
               
               .map((task) => (
-                <li key={task.id} className="bg-white bg-opacity-90 p-4 rounded-md flex items-center justify-between">
+                <li key={task.id} className={`${isNightTheme ?  'bg-gradient-to-br from-purple-400 to-blue-600' : 'bg-white'} bg-opacity-90 p-4 rounded-md flex items-center justify-between`}>
                   <div className="flex items-center space-x-3">
                     {!task.completed && (
                       <span
@@ -243,7 +279,9 @@ cursor-pointer text-green-500"
                       
                   </div>
                   <div></div>
-                  <div className="text-sm text-gray-500">
+                  <div className={`text-sm ${
+    isNightTheme && !task.completed ? 'text-gray-300' : 'text-black'
+  }`}>
                     {task.date.toLocaleString()} {task.time}
                   </div>
                   <div className='flex space-x-10'>
@@ -276,18 +314,12 @@ cursor-pointer text-green-500"
       </div>
     </Link>
 
-    {/* <Footer /> */}
-    {isModalOpen && (
-      <SignInModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSignInSuccess={handleSignInSuccess}
-      />
-    )}
+ 
 
     {newTask && (
       <NewTaskModal
         isOpen={newTask}
+        updateTaskGroups={updateTaskGroups} 
         onClose={closeTask}
         onAddTask={handleTask}
       />

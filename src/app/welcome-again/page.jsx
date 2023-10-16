@@ -36,7 +36,7 @@ export default function WelcomeAgain() {
           </p>
         </div>
       </div>
-     <Link href="/main"><button className='bg-blue-500 w-80 h-12 rounded-full justify-between px-4 py-2 mt-20 flex items-center space-x-2 transform transition duration-300 hover:scale-105 hover:bg-blue-600 hover:text-white'>
+     <Link href="/tire"><button className='bg-blue-500 w-80 h-12 rounded-full justify-between px-4 py-2 mt-20 flex items-center space-x-2 transform transition duration-300 hover:scale-105 hover:bg-blue-600 hover:text-white'>
   <span className='ml-2 font-bold uppercase'>Continue</span>
   <FaArrowRight className='w-6 h-6' />
 </button></Link> 

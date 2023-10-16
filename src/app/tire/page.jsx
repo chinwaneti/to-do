@@ -1,62 +1,47 @@
 "use client"
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { onAuthStateChanged } from 'firebase/auth';
 import { AiOutlineClose } from 'react-icons/ai';
+import Link from 'next/link';
 
-
-function SignInModal({ isOpen, onClose, onSignInSuccess }) {
+function SignInModal({onClose}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter(); // Initialize the useRouter hook
 
 
-  const handleClose =()=>{
-    onClose()
+  const handleClose = ()=>{
+    onclose()
   }
+ 
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    
+    setErrorMessage(''); // Clear any previous error message
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        if (userCredential.user) {
-          onSignInSuccess();
-        }
-        console.log(userCredential);
+        router.push('/main'); 
       })
       .catch((error) => {
-       
-
-        if (error.code === 'auth/invalid-login-credentials') {
-          setError("Error in Email or Password")
-         
+        // Handle sign-up error and display the corresponding message
+         if (error.code === '400 (Bad Request)') {
+          setErrorMessage('Email or Password error.');
+        } else {
+          setErrorMessage('email or Password error!');
         }
-      
       });
   };
 
-  useEffect(() => {
-    const listen = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-    return () => {
-      listen();
-    };
-  }, []);
-
   return (
     <div
-      className={`fixed top-0 left-0 w-full h-full flex items-center justify-center ${
-        isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      } transition-opacity duration-300 ease-in-out`}
+      className={`fixed top-0 left-0 w-full h-full flex items-center justify-center 
+       bg-gray-200 
+       transition-opacity duration-300 ease-in-out`}
     >
       <div className="bg-white w-96 rounded-lg relative shadow-lg p-8">
         <h2 className="text-2xl font-semibold mb-4">Sign In</h2>
@@ -91,7 +76,7 @@ function SignInModal({ isOpen, onClose, onSignInSuccess }) {
           <AiOutlineClose />
         </div>
         <div>
-          {error && ( <p className='text-red-600'>{error}</p> )}
+          {errorMessage && ( <p className='text-red-600'>{errorMessage}</p> )}
         </div>
         <button
           className="bg-indigo-500 text-white w-full py-2 rounded-lg hover:bg-indigo-600 transition duration-300 ease-in-out"
